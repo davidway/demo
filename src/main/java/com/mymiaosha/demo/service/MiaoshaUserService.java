@@ -2,16 +2,19 @@ package com.mymiaosha.demo.service;
 
 import com.mymiaosha.demo.dao.MoocUserDao;
 import com.mymiaosha.demo.domain.MiaoshaUser;
+import com.mymiaosha.demo.domain.OrderInfo;
 import com.mymiaosha.demo.exception.GlobalException;
 import com.mymiaosha.demo.redis.MiaoshaUserKey;
 import com.mymiaosha.demo.redis.RedisService;
 import com.mymiaosha.demo.result.CodeMsg;
 import com.mymiaosha.demo.util.MD5Util;
 import com.mymiaosha.demo.util.UUIDUtil;
+import com.mymiaosha.demo.vo.GoodsVo;
 import com.mymiaosha.demo.vo.LoginVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +28,10 @@ public class MiaoshaUserService {
     RedisService redisService;
     @Autowired
     HttpServletResponse response;
+    @Autowired
+    GoodsService goodsService;
+    @Autowired
+    OrderService orderService;
 
     public MiaoshaUser getByMobile(String mobile) {
         MiaoshaUser user = moocUserDao.getByMobile(mobile);
@@ -69,5 +76,14 @@ public class MiaoshaUserService {
             addUserCookie(miaoshaUser,token);
         }
         return miaoshaUser;
+    }
+
+    @Transactional
+    public OrderInfo miaosha(MiaoshaUser miaoshaUser, GoodsVo goods) {
+
+        goodsService.reduceStock(goods);
+
+        OrderInfo orderInfo = orderService.createOrder(miaoshaUser,goods);
+        return orderInfo;
     }
 }
