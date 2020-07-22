@@ -30,6 +30,7 @@ public class DemoController {
 
     @RequestMapping("test")
     public String toLogin(){
+        System.out.println();
         return "login";
     }
 
