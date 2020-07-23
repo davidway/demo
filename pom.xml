@@ -10,6 +10,8 @@
     </parent>
     <groupId>com.mymiaosha</groupId>
     <artifactId>demo</artifactId>
+    <!--打war包需要依赖tomcat的插件，看下面plugin和maven decpency-->
+    <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>demo</name>
     <description>Demo project for Spring Boot</description>
@@ -105,13 +107,34 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--打war包-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope><!--运行不需要依赖-->
+        </dependency>
+
     </dependencies>
 
+
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
+            <!--打war包-->
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
             </plugin>
         </plugins>
     </build>

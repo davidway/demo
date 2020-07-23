@@ -1,11 +1,12 @@
 package com.mymiaosha.demo.service;
 
-import com.mymiaosha.demo.dao.MoocUserDao;
+import com.mymiaosha.demo.dao.MiaoshaUserDao;
 import com.mymiaosha.demo.domain.MiaoshaUser;
 import com.mymiaosha.demo.domain.OrderInfo;
 import com.mymiaosha.demo.exception.GlobalException;
 import com.mymiaosha.demo.redis.MiaoshaUserKey;
 import com.mymiaosha.demo.redis.RedisService;
+import com.mymiaosha.demo.redis.UserKey;
 import com.mymiaosha.demo.result.CodeMsg;
 import com.mymiaosha.demo.util.MD5Util;
 import com.mymiaosha.demo.util.UUIDUtil;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MiaoshaUserService {
     public static final String COOKIE_NAME_TOKEN="token";
     @Autowired
-    MoocUserDao moocUserDao;
+    MiaoshaUserDao miaoshaUserDao;
     @Autowired
     RedisService redisService;
     @Autowired
@@ -34,9 +35,38 @@ public class MiaoshaUserService {
     OrderService orderService;
 
     public MiaoshaUser getByMobile(String mobile) {
-        MiaoshaUser user = moocUserDao.getByMobile(mobile);
+        //取缓存
+        MiaoshaUser user = redisService.get(UserKey.getById,""+mobile,MiaoshaUser.class);
+        if ( user!=null){
+            return user;
+        }else{
+            //如果缓存不存在，则取数据库
+             user = miaoshaUserDao.getByMobile(mobile);
+            if ( user!=null){
+                redisService.set(UserKey.getById,""+mobile,MiaoshaUser.class);
+            }
+        }
         return user;
     }
+
+    public boolean updatePassword(String token,long id,String passwordNew) {
+        //取缓存
+        MiaoshaUser user = getByMobile(""+id);
+        if ( user==null){
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        MiaoshaUser toBeUpdate = new MiaoshaUser();
+        toBeUpdate.setId(id);
+        toBeUpdate.setPassword(MD5Util.formPassToDBPass(passwordNew,user.getSalt()));
+        miaoshaUserDao.update(toBeUpdate);
+        //处理缓存
+        redisService.delete(UserKey.getById,""+id);
+        user.setPassword(passwordNew);
+        redisService.set(MiaoshaUserKey.token,""+id,user);
+
+    }
+
+
 
     public boolean login(LoginVo loginVo) {
         String mobile =loginVo.getMobile();
