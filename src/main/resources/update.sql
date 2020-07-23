@@ -11,10 +11,9 @@
  Target Server Version : 50619
  File Encoding         : 65001
 
- Date: 22/07/2020 18:30:00
+ Date: 23/07/2020 09:50:54
 */
-create database miaosha;
-use miaosha;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -44,19 +43,19 @@ INSERT INTO `goods` VALUES (2, '华为Mate9', '华为 mate9 4G+32', '/img/mata10
 -- ----------------------------
 DROP TABLE IF EXISTS `miaosha_goods`;
 CREATE TABLE `miaosha_goods`  (
-                                  `id` bigint(20) NOT NULL,
+                                  `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                   `goods_id` bigint(20) NULL DEFAULT NULL,
                                   `miaosha_price` decimal(10, 2) NULL DEFAULT NULL,
                                   `stock_count` int(11) NULL DEFAULT NULL,
                                   `start_date` datetime(0) NULL DEFAULT NULL,
                                   `end_date` datetime(0) NULL DEFAULT NULL,
                                   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Records of miaosha_goods
 -- ----------------------------
-INSERT INTO `miaosha_goods` VALUES (1, 1, 0.01, 10, '2020-07-22 18:20:39', '2020-07-22 18:20:44');
+INSERT INTO `miaosha_goods` VALUES (1, 1, 0.01, 10, '2020-07-03 18:20:39', '2020-08-22 18:20:44');
 INSERT INTO `miaosha_goods` VALUES (2, 2, 0.01, 10, '2020-07-22 18:20:53', '2020-07-22 18:20:56');
 
 -- ----------------------------
@@ -64,19 +63,24 @@ INSERT INTO `miaosha_goods` VALUES (2, 2, 0.01, 10, '2020-07-22 18:20:53', '2020
 -- ----------------------------
 DROP TABLE IF EXISTS `miaosha_order`;
 CREATE TABLE `miaosha_order`  (
-                                  `id` bigint(20) NOT NULL,
+                                  `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                   `user_id` bigint(20) NULL DEFAULT NULL,
                                   `order_id` bigint(20) NULL DEFAULT NULL,
                                   `goods_id` bigint(20) NULL DEFAULT NULL,
                                   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+
+-- ----------------------------
+-- Records of miaosha_order
+-- ----------------------------
+INSERT INTO `miaosha_order` VALUES (3, 13751386481, 0, 1);
 
 -- ----------------------------
 -- Table structure for miaosha_user
 -- ----------------------------
 DROP TABLE IF EXISTS `miaosha_user`;
 CREATE TABLE `miaosha_user`  (
-                                 `id` bigint(20) NOT NULL,
+                                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                  `nickname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
                                  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
                                  `salt` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -85,7 +89,7 @@ CREATE TABLE `miaosha_user`  (
                                  `last_login_date` datetime(0) NULL DEFAULT NULL,
                                  `login_count` int(11) NULL DEFAULT NULL,
                                  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 13751386482 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of miaosha_user
@@ -97,7 +101,7 @@ INSERT INTO `miaosha_user` VALUES (13751386481, 'weiqiang', '6e0a7fe692684372437
 -- ----------------------------
 DROP TABLE IF EXISTS `order_info`;
 CREATE TABLE `order_info`  (
-                               `id` bigint(20) NOT NULL,
+                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                `user_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
                                `goods_id` bigint(20) NULL DEFAULT NULL,
                                `delivery_addr_id` bigint(20) NULL DEFAULT NULL,
@@ -109,6 +113,12 @@ CREATE TABLE `order_info`  (
                                `create_date` datetime(0) NULL DEFAULT NULL,
                                `pay_date` datetime(0) NULL DEFAULT NULL,
                                PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of order_info
+-- ----------------------------
+INSERT INTO `order_info` VALUES (1, '13751386481', 1, NULL, 'iphoneX', '1', 0.01, 1, 0, '2020-07-23 01:49:20', NULL);
+INSERT INTO `order_info` VALUES (2, '13751386481', 1, NULL, 'iphoneX', '1', 0.01, 1, 0, '2020-07-23 01:50:34', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
